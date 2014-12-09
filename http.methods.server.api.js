@@ -360,6 +360,14 @@ var streamHandler = function(req, res, callback) {
   }
 };
 
+// CORS
+WebApp.connectHandlers.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "http://meteor.local");
+  res.setHeader("Access-Control-Allow-Methods", "PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 // Handle the actual connection
 WebApp.connectHandlers.use(function(req, res, next) {
 
@@ -568,6 +576,11 @@ WebApp.connectHandlers.use(function(req, res, next) {
           // Allow user to alter the status code and send a message
           sendError(res, self.statusCode, result);
         }
+
+      } else if (self.method === 'OPTIONS') {
+
+        self.statusCode = 200;
+        res.end();
 
       } else {
         sendError(res, 404, 'Service not found');
